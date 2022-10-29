@@ -1,45 +1,23 @@
-import { useEffect, useState } from 'react';
-import { ListItem } from "./components/ListItem";
-import type { User } from "./types/user";
+import { useFetchUsers } from './hooks/useFetchUsers';
 
 export const App = () => {
-  const [users, setUsers] = useState<User[]>([]);
-
-  useEffect(() => {
-    const temp: User[] = [
-      {
-        "id": 1,
-        "name": "主田",
-        "age": 24,
-        "personalColor": "blue"
-      },
-      {
-        "id": 2,
-        "name": "先岡",
-        "age": 28,
-        "personalColor": "pink"
-      },
-      {
-        "id": 3,
-        "name": "後藤",
-        "age": 23,
-        "personalColor": "green",
-        "hobbies": ["game", "soccer"]
-      }
-    ];
-    setUsers(temp);
-  }, []);
+  const { userList, isLoading, isError, onClickFetchUser } = useFetchUsers();
 
   return (
     <div>
-      {users.map((user) => (
-        <ListItem
-          id={user.id}
-          name={user.name}
-          age={user.age}
-          hobbies={user.hobbies}
-        />
-      ))}
+      <button onClick={onClickFetchUser}>ユーザー取得</button>
+
+      {/* エラー時 */}
+      {isError && <p style={{ color: "red" }}>エラーが発生しました</p>}
+
+      {/* ローディング時 */}
+      {isLoading ? (
+        <p>データ取得中です</p>
+      ) : (
+        userList.map(user => (
+          <p key={user.id}>{`${user.id}:${user.name}(${user.age}歳)`}</p>
+        ))
+      )}
     </div>
-  );
+  )
 };
