@@ -1,26 +1,22 @@
-import { Fragment, useState, memo, useCallback } from "react";
-import { Child1 } from "./components/Child1";
-import { Child4 } from "./components/Child4";
+import { Fragment, useContext } from "react";
+import { Card } from "./components/Card";
+import { AdminFlagContext } from "./components/providers/AdminFlagProvider";
 
-export const App = memo(() => {
-  console.log("App レンダリング");
+export const App = () => {
 
-  const [num, setNum] = useState(0);
+  // 管理者フラグ
+  const { isAdmin, setIsAdmin } = useContext(AdminFlagContext);
 
-  const onClickButton = () => {
-    setNum(num + 1);
-  };
+  // 切り替え押下時
+  const onClickSwitch = () => setIsAdmin(!isAdmin);
 
-  const onClickReset = useCallback(() => {
-    setNum(0);
-  }, []);
+  console.log("App");
 
   return (
     <Fragment>
-      <button onClick={onClickButton}>ボタン</button>
-      <p>{num}</p>
-      <Child1 onClickReset={onClickReset} />
-      <Child4 />
+      {isAdmin ? <span>管理者です</span> : <span>管理者以外です</span>}
+      <button onClick={onClickSwitch}>切り替え</button>
+      <Card />
     </Fragment>
   );
-});
+};
