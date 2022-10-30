@@ -1,5 +1,7 @@
-import { ChangeEvent, useState, FC } from "react";
+import { ChangeEvent, useState, FC, useCallback } from "react";
 import classes from "../css/App.module.scss";
+import { MemoList } from "./MemoList";
+
 export const App: FC = () => {
 
   // テキストボックス State
@@ -23,33 +25,21 @@ export const App: FC = () => {
   };
 
   // 削除ボタン押下時
-  const onClickDelete = (index: number) => {
+  const onClickDelete = useCallback((index: number) => {
     // State変更を正常に検知させるために新たな配列を生成
     const newMemos = [...memos];
 
     // メモ配列から該当の要素を削除
     newMemos.splice(index, 1);
     setMemos(newMemos);
-  }
+  }, [memos])
 
   return (
     <div>
       <h1>簡単メモアプリ</h1>
       <input type="text" value={text} onChange={onChangeText} />
       <button className={classes.button} onClick={onClickAdd}>追加</button>
-      <div className={classes.container}>
-        <p>メモ一覧</p>
-        <ul>
-          {memos.map((memo, index) => (
-            <li key={memo}>
-              <div className={classes.memo_wrapper}>
-                <p>{memo}</p>
-                <button className={classes.button} onClick={() => onClickDelete(index)}>削除</button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <MemoList memos={memos} onClickDelete={onClickDelete} />
     </div>
   )
 
